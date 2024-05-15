@@ -1,45 +1,52 @@
 module SIPO(
-	input even,
-	input odd,
-	input clk,
-	input tffout,
-	input reset,
-	output reg [3:0]Sheve,
-	output reg [3:0]Shodd
-);
-reg [1:0]counteve=2'b00;
-reg [1:0]countodd=2'b00;
-always @(posedge clk)
+    input dataeve,
+    input dataodd,
+    input clk,
+    input outt,
+    input reset,
+    output reg [3:0]outeve,
+    output reg [3:0]outodd
+    );
+reg [2:0]counteve=3'b000;
+reg [2:0]countodd=3'b000;
+initial begin
+	outeve=4'b0000;
+	outodd=4'b0000;
+	counteve=3'b000;
+	countodd=3'b000;
+end
+always @(posedge clk or posedge reset)
 begin
-	if (reset)
+	if(reset)
 	begin
-		counteve<=2'b00;
-		countodd<=2'b00;
-		Sheve<=4'b0000;
-		Shodd<=4'b0000;
+		outeve<=4'b0000;
+		outodd<=4'b0000;
+		counteve<=3'b000;
+		countodd<=3'b000;
 	end
 	else
 	begin
-		if(tffout)
+		if(!outt)
 		begin
-			if(counteve==3) Sheve=Sheve;//hold state
+			if(counteve>4) outeve<=outeve;//holds current value
 			else
 			begin
-				Sheve[3]=odd;
-				Sheve=Sheve>>1'b1;
-				counteve=counteve+1'b1;
+			outeve<=outeve>>1'b1;
+			outeve[3]<=dataeve;//fills in new data
+			counteve<=counteve+1'b1;
 			end
 		end
-		else if(!tffout)
+		else
 		begin
-			if(countodd==3) Shodd=Shodd;//hold values till new values arrive
+			if(countodd>3) outodd<=outodd;//holds current value
 			else
 			begin
-				Shodd[3]=even;
-				Shodd=Shodd>>1'b1;
-				countodd=countodd+1'b1;
+			outodd<=outodd>>1'b1;
+			outodd[3]<=dataodd;//fills in new data
+			countodd<=countodd+1'b1;
 			end
 		end
 	end
 end
+
 endmodule
