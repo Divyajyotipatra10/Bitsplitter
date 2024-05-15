@@ -1,13 +1,13 @@
 module PISO(
-	input [7:0]data,
-	input clk,
-	input ld,
-	output reg dout
-);
+    input [7:0]data,
+    input clk,
+    input ld,
+    output reg dout
+    );
 reg [7:0]shftreg;
 
 initial begin
-	shftreg=8'b0;
+	shftreg=8'b00000000;
 end
 
 always @(posedge clk)
@@ -24,4 +24,5 @@ begin
 		dout<=shftreg[0];
 	end
 end
+
 endmodule
